@@ -1,0 +1,32 @@
+1.1
+Hozz létre egy kezdetleges adatbázist reprezentáló algebrai adatszerkezetet "Data" néven ami két konstruktort tartalmaz. Az egyik konstruktor a Data konstruktorral eltárolja az adatot és a táblázatban lévő pozícióját (Int,Int). A másik konstruktor a törölt adatot reprezentálja Empty konstruktorral ami szintén tartalmazza a pozícióját. Adj meg egy adatszinonímát a Datákat tartalmazó listára DataBase néven
+
+1.2
+A getData függvénnyel nyerjük ki egy adatbázisból a megadott pozícióbban lévő adatot, ha a pozíciót nem tartalmazza az adadtbázis az azt jelenti, hogy az adott helyen nincs adat (ami egyenértékű a törölt adattal)
+
+getData :: (Int, Int) -> DataBase a -> Data a
+
+getData (2,1) [Data 1 (1,1), Empty (1,2), Empty (1,3), Data 2 (2,2), Data 3 (2,3), Empty (3,1)] == Empty (2,1)
+getData (1,1) [Data 1 (1,1), Empty (1,2), Empty (1,3), Data 2 (2,2), Data 3 (2,3), Empty (3,1)] == Data 1 (1,1)
+getData (3,1) [Data 1 (1,1), Empty (1,2), Empty (1,3), Data 2 (2,2), Data 3 (2,3), Empty (3,1)] == Empty (3,1)
+getData (2,3) [Data 1 (1,1), Empty (1,2), Empty (1,3), Data 2 (2,2), Data 3 (2,3), Empty (3,1)] == Data 3 (2,3)
+getData (1,1) [] == Empty (1,1)
+1.3
+Az adatbázisunkban csupa számot tárolunk el, adjuk meg, hogy mennyi az adatbázisunk összege.
+
+sumOfData :: DataBase Int -> Int
+
+sumOfData [Data 1 (1,1), Empty (1,2), Empty (1,3), Data 2 (2,2), Data 3 (2,3), Empty (3,1)] == 6
+sumOfData [Data (-1) (1,1), Empty (1,2), Data 5 (1,3), Data 2 (2,2), Data 3 (2,3), Empty (3,1)] == 9
+sumOfData [] = 0
+2.1
+Adatbázisok kezelésekor és az adatokkal való dolgozás előtt előfordulhat, hogy formázni kell az adatokat. Megeshet, hogy egyes adatok elvesznek, vagy fölösleges adatok is felvételre kerülnek, vagy rossz sorrendben adták meg őket. Ezeket az adatokat meg kell tisztítani és egységes íteni kell. Egy ilyen probléma megoldására, hozz létre egy saját algebrai adattípust ami egy ember adatainak fajtáit fogja jelképezni. Az adattípus neve legyen PersonTrait és rendelkezzen 3 konstruktorral Name, Age, Eye néven, továbbá legyen rajta példányosítva az Eq és a Show típusosztályok is.
+
+2.2
+Kreáljunk egy függvényt ami paraméterként bekap egy listát ami a kell adatok típusait és sorrendjét tartalmazza majd egy tuple-ökben címkétett embereket tartalmazó listát. A függvény szűrje ki a kellő adatokat és rendezett sorrendben adja vissza azokat. Az adatok értékeit Justba csomagoljuk és legyen az érték Nothing, ha az adott embernek nincs meg a megfelelő adata.
+
+cleanedPerson :: [PersonTrait] -> [[(PersonTrait,String)]] -> [[(PersonTrait,Maybe String)]]
+
+cleanedPerson [Name, Age, Eye] [[(Name,"Joe"),(Age,"5"),(Eye,"Blue")],[(Name,"Bob")],[(Name,"Bil"),(Eye,"Black"),(Age,"70")]] == [[(Name,Just "Joe"),(Age,Just "5"),(Eye,Just "Blue")],[(Name,Just "Bob"),(Age,Nothing),(Eye,Nothing)],[(Name,Just "Bil"),(Age,Just "70"),(Eye,Just "Black")]]
+cleanedPerson [Name, Age] [[(Name,"Joe"),(Age,"5"),(Eye,"Blue")],[(Name,"Bob")],[(Name,"Bil"),(Eye,"Black"),(Age,"70")]] == [[(Name,Just "Joe"),(Age,Just "5")],[(Name,Just "Bob"),(Age,Nothing)],[(Name,Just "Bil"),(Age,Just "70")]]
+cleanedPerson [] [[(Name,"Joe"),(Age,"5"),(Eye,"Blue")],[(Name,"Bob")],[(Name,"Bil"),(Eye,"Black"),(Age,"70")]] == [[],[],[]]
